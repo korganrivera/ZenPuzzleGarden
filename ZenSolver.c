@@ -27,14 +27,18 @@
     Another improvement idea: use a bitfield to represent the entire grid.
     That way instead of representing a 10x10 grid with 100 unsigneds = 3200
     bits, or 400 bytes, it would only require 100 bits, or 13 bytes. That's
-    only 3.25% of the memory.
+    only 1/8th of the memory.
+
+    2015.6.22.11:03         Been messing with this all day.  So it turns out I had a + where I should have had a - on one of my
+                            monk movements.  Now my program works fine, even for large grids, in less than 5 seconds. :)
+                            So that was fucking annoying.  Done!
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SANDROWS 3      //  These two values are the only ones you need to set.  If there are objects in the sand, do that in main().
-#define SANDCOLS 4
+#define SANDROWS 10      //  These two values are the only ones you need to set.  If there are objects in the sand, do that in main().
+#define SANDCOLS 10
 
 #define UP 1
 #define DOWN 2
@@ -45,7 +49,7 @@
 #define SAND 1
 #define PATH 2
 
-#define DEBUG   1                                                           //  if set to 1, debug stuff will be shown.
+#define DEBUG 0                                                             //  if set to 1, debug stuff will be shown.
 
 #define pathrows (SANDROWS+2)                                               //  height of grid with the path.
 #define pathcols (SANDCOLS+2)                                               //  width of grid with the path.
@@ -85,7 +89,7 @@ int main(void){
     //grid[2][4] = 1;
     //grid[3][4] = 1;
     //grid[4][3] = 1;
-    grid[4][4] = 1;
+    grid[2][2] = 1;
 
     //  display entire grid.
     puts("Here is the grid:");
@@ -106,8 +110,6 @@ int main(void){
     func(bigrows/2,1, &grid[0][0], 0);
     free(stack);
     puts("\nno solution :(");
-    malloccallcount--;
-    mallocedbytes-=stacksize;
 }
 
 
@@ -115,13 +117,15 @@ void func(unsigned x, unsigned y, char *grid, unsigned stacknext){
     unsigned onpath, sanddone, i, lastposition, lastpositiontype;
     char *mygrid;
 
-    //  for debug, finding memory leaks. Cheap graph of allocations. displays number of calls.
+    //  for lazy debug, finding memory leaks. Cheap graph of allocations. displays number of calls.
     //for(i=0; i<malloccallcount/10; i++) putchar('|');
     //putchar('\n');
 
     //  for debug, finding memory leaks. Cheap graph of allocations. displays number of bytes.
-    //for(i=0; i<mallocedbytes/1024; i++) putchar('|');
-    //putchar('\n');
+    //if(DEBUG){
+    //    for(i=0; i<mallocedbytes/1024; i++) putchar('|');
+    //    putchar('\n');
+    // }
 
     if(DEBUG){
         printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
@@ -148,7 +152,7 @@ void func(unsigned x, unsigned y, char *grid, unsigned stacknext){
     if(!onpath &&  (*(stack+stacknext-1)==RIGHT && !(*(grid+x*bigcols+y+1)))       || \
                    (*(stack+stacknext-1)==LEFT  && !(*(grid+x*bigcols+y-1)))       || \
                    (*(stack+stacknext-1)==UP    && !(*(grid+x*bigcols+y-bigcols))) || \
-                   (*(stack+stacknext-1)==DOWN  && !(*(grid+x*bigcols+y-bigcols)))) {
+                   (*(stack+stacknext-1)==DOWN  && !(*(grid+x*bigcols+y+bigcols)))) {
             //  malloc space for copy of grid.
             if((mygrid = malloc(bigsize)) == NULL){ puts("\nfunc():mygrid:malloc failed."); endprogram(1); }
             malloccallcount++;
@@ -225,7 +229,7 @@ void func(unsigned x, unsigned y, char *grid, unsigned stacknext){
     //  mark current position as visited.
     *(mygrid+x*bigcols+y) = 1;
 
-    //  check if at deadend. if so, rewind stacknext one position, and return.
+    //  check if at deadend. if so, return.
     if(*(mygrid+x*bigcols+y-bigcols) && *(mygrid+x*bigcols+y+bigcols) && *(mygrid+x*bigcols+y+1) && *(mygrid+x*bigcols+y-1)){
         free(mygrid);
         malloccallcount--;
@@ -265,8 +269,8 @@ void func(unsigned x, unsigned y, char *grid, unsigned stacknext){
 
 //  tells if cell i is sand or path.
 char celltype(unsigned i){
-if((i%bigcols==1 || i%bigcols==bigcols-2) || (i/bigcols==1 || i/bigcols==bigrows-2)) return PATH;
-        else return SAND;
+    if((i%bigcols==1 || i%bigcols==bigcols-2) || (i/bigcols==1 || i/bigcols==bigrows-2)) return PATH;
+    else return SAND;
 }
 
 
