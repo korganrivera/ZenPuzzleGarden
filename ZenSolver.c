@@ -20,9 +20,10 @@
 
     2015.6.22.15:01         Still crashes with grids as small as 4x4.  Fix later.
 
-    2015.6.22.11:03         Been messing with this all day.  So it turns out I had a + where I should have had a - on one of my
-                            monk movements.  Now my program works fine, even for large grids, in less than 5 seconds. :)
-                            So that was fucking annoying.  Done!
+    2015.6.22.11:03         Been messing with this all day.  So it turns out I had a +
+                            where I should have had a - on one of my monk movements.
+                            Now my program works fine, even for large grids, in less
+                            than 5 seconds. :) So that was fucking annoying.  Done!
 */
 
 #include <stdio.h>
