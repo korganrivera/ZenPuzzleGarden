@@ -20,15 +20,6 @@
 
     2015.6.22.15:01         Still crashes with grids as small as 4x4.  Fix later.
 
-    The next improvement I could do is that I shouldn't need to backtrack all
-    5 moves that all went in the same direction and hit a deadend. They should
-    be one group.  So that would make a huge difference..
-
-    Another improvement idea: use a bitfield to represent the entire grid.
-    That way instead of representing a 10x10 grid with 100 unsigneds = 3200
-    bits, or 400 bytes, it would only require 100 bits, or 13 bytes. That's
-    only 1/8th of the memory.
-
     2015.6.22.11:03         Been messing with this all day.  So it turns out I had a + where I should have had a - on one of my
                             monk movements.  Now my program works fine, even for large grids, in less than 5 seconds. :)
                             So that was fucking annoying.  Done!
